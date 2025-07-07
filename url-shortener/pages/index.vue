@@ -11,30 +11,40 @@
 
     <div v-if="shortUrl">
       <p>Short URL:</p>
-      <a :href="shortUrl" target="_blank">URL</a>
+      <a :href="shortUrl" target="_blank">{{ shortUrl }}</a>
     </div>
   </div>
 </template>
 
 <script setup>
-// import { ref } from 'vue'
+import { ref } from 'vue'
 
-// const longUrl = ref('')
-// const shortUrl = ref('')
+const longUrl = ref('')
+const shortUrl = ref('')
 
-// const shortenUrl = async () => {
-//   const { data, error } = await useFetch('http://localhost:8000/api/shorten', {
-//     method: 'POST',
-//     body: { url: longUrl.value },
-//   })
+const shortenUrl = async () => {
+  if (!longUrl.value) {
+    alert('Please enter a URL')
+    return
+  }
 
-//   if (error.value) {
-//     alert('Failed to shorten URL')
-//   } else {
-//     shortUrl.value = data.value.short_url
-//   }
-// }
+  const { data, error } = await useFetch('https://ee54-103-100-175-121.ngrok-free.app/api/shorten', {
+    method: 'POST',
+    body: { originalUrl: longUrl.value },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+
+  if (error.value || !data.value?.shortUrl) {
+    alert('Failed to shorten URL')
+  } else {
+    shortUrl.value = data.value.shortUrl
+  }
+}
 </script>
+
+
 
 <style scoped>
 .container {
